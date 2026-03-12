@@ -1,4 +1,4 @@
-package com.bridge.domain.user;
+package com.bridge.domain.user.controller;
 
 import com.bridge.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +9,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 public class UserController {
-    @GetMapping("test")
-    public ResponseEntity<ApiResponse<String>> test() {
-        return ResponseEntity.ok(ApiResponse.success("테스트"));
-    }
 }
