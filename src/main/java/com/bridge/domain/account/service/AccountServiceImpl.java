@@ -1,6 +1,7 @@
 package com.bridge.domain.account.service;
 
 import com.bridge.domain.account.dto.request.AccountCreateRequest;
+import com.bridge.domain.account.dto.request.AccountUpdateRequest;
 import com.bridge.domain.account.dto.response.AccountResponse;
 import com.bridge.domain.account.entity.Account;
 import com.bridge.domain.account.entity.AccountState;
@@ -22,6 +23,8 @@ public class AccountServiceImpl implements AccountService {
 
     private final AccountRepository accountRepository;
     private final UserRepository userRepository;
+//    private final BCryptPasswordEncoder passwordEncoder; // TODO: 비밀번호 암호화
+
 
     @Transactional
     @Override
@@ -29,7 +32,7 @@ public class AccountServiceImpl implements AccountService {
         User user = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.USER_NOT_FOUND));
         String accountNumber = generateAccountNumber();
-        Account account = Account.create(user, accountNumber, request.getCurrency());
+        Account account = Account.create(user, accountNumber, request.getCurrency(), request.getTransferLimit(), request.getDailyLimit());
         accountRepository.save(account);
         return AccountResponse.from(account);
     }
@@ -46,6 +49,13 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse getAccount(Long userId, Long accountId) {
         Account account = getAccountById(userId, accountId);
         return AccountResponse.from(account);
+    }
+
+    @Transactional
+    @Override
+    public void updateAccount(Long userId, Long accountId, AccountUpdateRequest request) {
+        Account account = getAccountById(userId, accountId);
+        account.update(request.getBalance(), request.getTransferLimit(), request.getDailyLimit());
     }
 
     @Transactional

@@ -1,6 +1,7 @@
 package com.bridge.domain.account.controller;
 
 import com.bridge.domain.account.dto.request.AccountCreateRequest;
+import com.bridge.domain.account.dto.request.AccountUpdateRequest;
 import com.bridge.domain.account.dto.response.AccountResponse;
 import com.bridge.domain.account.service.AccountService;
 import com.bridge.global.common.ApiResponse;
@@ -53,6 +54,17 @@ public class AccountController {
         // TODO
         AccountResponse response = accountService.getAccount(userId, accountId);
         return ResponseEntity.ok(ApiResponse.success(response));
+    }
+
+    @Operation(summary = "계좌 정보(잔액, 한도 등) 변경")
+    @PatchMapping("/{userId}/{accountId}")
+    public ResponseEntity<ApiResponse<Void>> updateAccount(
+            @PathVariable(value = "userId") Long userId,
+            @PathVariable(value = "accountId") Long accountId,
+            @RequestBody AccountUpdateRequest request
+    ) {
+        accountService.updateAccount(userId, accountId, request);
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(summary = "계좌 삭제")
